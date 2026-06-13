@@ -121,7 +121,7 @@ function onedit(ele) {
       name.value = editObj.name;
       username.value = editObj.username;
       email.value = editObj.email;
-      address.value = editObj.address;
+      address.value = editObj.address.city;
       phone.value = editObj.phone;
 
       editBtn.classList.add("d-none");
@@ -154,7 +154,7 @@ function onUpdateHandalar(ele) {
       <td>${updObj.name}</td>
       <td>${updObj.username}</td>
       <td>${updObj.email}</td>
-      <td>${updObj.address}</td>
+      <td>${updObj.address.city}</td>
       <td>${updObj.phone}</td>
       <td><i class="fa-solid fa-2x  text-primary 
       fa-pen-to-square" onclick = "onedit(this)"></i></
