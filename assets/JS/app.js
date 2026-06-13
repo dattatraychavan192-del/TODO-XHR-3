@@ -11,6 +11,7 @@ const phone = document.getElementById("phone");
 const editBtn = document.getElementById("editBtn");
 const updateBtn = document.getElementById("updateBtn");
 const cardContainer = document.getElementById("cardContainer");
+const spinner = document.getElementById("spinner");
 
 let userArr = [];
 
@@ -58,6 +59,8 @@ function creatCard(ele) {
 function onSubmitHandalar(ele) {
   ele.preventDefault();
 
+  spinner.classList.remove("d-none");
+
   let newObj = {
     name: name.value,
     username: username.value,
@@ -92,7 +95,14 @@ fa-trash" onclick = "ondelete(this)"></i></td>
       `;
 
       cardContainer.prepend(tr);
+
+      swal.fire({
+        title: "Todo Add Successfully",
+        icon: "success",
+        timer: 2000,
+      });
     }
+    spinner.classList.add("d-none");
   };
 }
 
@@ -121,6 +131,8 @@ function onedit(ele) {
 }
 
 function onUpdateHandalar(ele) {
+  spinner.classList.remove("d-none");
+
   let updateId = localStorage.getItem("editId");
   let updObj = {
     name: name.value,
@@ -154,21 +166,37 @@ function onUpdateHandalar(ele) {
 
       editBtn.classList.remove("d-none");
       updateBtn.classList.add("d-none");
+
+      swal.fire({
+        title: "Todo Update Successfully",
+        icon: "success",
+        timer: 2000,
+      });
     }
+    spinner.classList.add("d-none");
   };
 }
 
 function ondelete(ele) {
+  spinner.classList.remove("d-none");
+
   let deleteId = ele.closest("tr").id;
   let deleteURL = `${baseURL}/users/${deleteId}`;
 
   let xhr = new XMLHttpRequest();
-  xhr.open("DELETE");
+  xhr.open("DELETE", deleteURL);
   xhr.send(null);
   xhr.onload = function () {
     if (xhr.status >= 200 && xhr.status <= 299) {
-      ele.closest(tr).remove();
+      ele.closest("tr").remove();
+
+      swal.fire({
+        title: "Todo remove Successfully",
+        icon: "success",
+        timer: 2000,
+      });
     }
+    spinner.classList.add("d-none");
   };
 }
 
