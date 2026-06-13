@@ -173,6 +173,8 @@ function onUpdateHandalar(ele) {
         timer: 2000,
       });
     }
+
+    userForm.reset();
     spinner.classList.add("d-none");
   };
 }
