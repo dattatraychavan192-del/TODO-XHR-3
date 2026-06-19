@@ -15,7 +15,17 @@ const spinner = document.getElementById("spinner");
 
 let userArr = [];
 
+function snackbar(msg, icon) {
+  swal.fire({
+    title: msg,
+    icon: icon,
+    timer: 2000,
+  });
+}
+
 function fetchUserData(ele) {
+  spinner.classList.remove("d-none");
+
   let xhr = new XMLHttpRequest();
   let postURL = `${baseURL}/users`;
 
@@ -26,6 +36,7 @@ function fetchUserData(ele) {
       userArr = JSON.parse(xhr.response);
 
       creatCard(userArr.reverse());
+      spinner.classList.add("d-none");
     }
   };
 }
@@ -44,10 +55,10 @@ function creatCard(ele) {
   <td>${element.address.city}</td>
   <td>${element.phone}</td>
 
-  <td><i class="fa-solid fa-2x  text-primary 
-  fa-pen-to-square" onclick = "onedit(this)"></i></
+  <td><i class="fa-solid fa-2x cursor-pointer text-primary 
+  fa-pen-to-square"  onclick = "onedit(this)"></i></
   td>
-   <td><i class="fa-solid fa-2x text-danger 
+   <td><i class="fa-solid fa-2x cursor-pointer text-danger 
   fa-trash" onclick = "ondelete(this)"></i></td>
 
 </tr>
@@ -80,6 +91,7 @@ function onSubmitHandalar(ele) {
       this.response = JSON.parse(xhr.response);
 
       let tr = document.createElement("tr");
+      tr.id = this.response.id;
       tr.innerHTML = `
       <td>${userArr.length}</td>
 <td>${newObj.name}</td>
@@ -87,26 +99,23 @@ function onSubmitHandalar(ele) {
 <td>${newObj.email}</td>
 <td>${newObj.address}</td>
 <td>${newObj.phone}</td>
-<td><i class="fa-solid fa-2x  text-primary 
+<td><i class="fa-solid fa-2x cursor-pointer text-primary 
 fa-pen-to-square" onclick = "onedit(this)"></i></
 td>
- <td><i class="fa-solid fa-2x text-danger 
+ <td><i class="fa-solid fa-2x cursor-pointer text-danger 
 fa-trash" onclick = "ondelete(this)"></i></td>
       `;
 
       cardContainer.prepend(tr);
-
-      swal.fire({
-        title: "Todo Add Successfully",
-        icon: "success",
-        timer: 2000,
-      });
+      snackbar("User Add Successfully", "success");
     }
     spinner.classList.add("d-none");
   };
 }
 
 function onedit(ele) {
+  spinner.classList.remove("d-none");
+
   let editId = ele.closest("tr").id;
   localStorage.setItem("editId", editId);
   let editURL = `${baseURL}/users/${editId}`;
@@ -126,6 +135,7 @@ function onedit(ele) {
 
       editBtn.classList.add("d-none");
       updateBtn.classList.remove("d-none");
+      spinner.classList.add("d-none");
     }
   };
 }
@@ -133,7 +143,7 @@ function onedit(ele) {
 function onUpdateHandalar(ele) {
   spinner.classList.remove("d-none");
 
-  let updateId = localStorage.getItem("editId");
+  let updateId = localStorage.getItem("editId").id;
   let updObj = {
     name: name.value,
     username: name.value,
@@ -166,40 +176,46 @@ function onUpdateHandalar(ele) {
 
       editBtn.classList.remove("d-none");
       updateBtn.classList.add("d-none");
-
-      swal.fire({
-        title: "Todo Update Successfully",
-        icon: "success",
-        timer: 2000,
-      });
     }
 
     userForm.reset();
     spinner.classList.add("d-none");
+    snackbar("User Successfully", "success");
   };
 }
 
 function ondelete(ele) {
   spinner.classList.remove("d-none");
 
-  let deleteId = ele.closest("tr").id;
-  let deleteURL = `${baseURL}/users/${deleteId}`;
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You want to delete this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      let deleteId = ele.closest("tr").id;
+      let deleteURL = `${baseURL}/users/${deleteId}`;
 
-  let xhr = new XMLHttpRequest();
-  xhr.open("DELETE", deleteURL);
-  xhr.send(null);
-  xhr.onload = function () {
-    if (xhr.status >= 200 && xhr.status <= 299) {
-      ele.closest("tr").remove();
-
-      swal.fire({
-        title: "Todo remove Successfully",
-        icon: "success",
-        timer: 2000,
-      });
+      let xhr = new XMLHttpRequest();
+      xhr.open("DELETE", deleteURL);
+      xhr.send(null);
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status <= 299) {
+          document.getElementById(deleteId).remove();
+          spinner.classList.add("d-none");
+          swal.fire({
+            title: "User delete successfully.",
+            icon: "success",
+            timer: 2000,
+          });
+        }
+      };
     }
-    spinner.classList.add("d-none");
-  };
+  });
 }
 
 userForm.addEventListener("submit", onSubmitHandalar);

@@ -4,9 +4,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-/* .card{ */
-    /* height: 100%; */
-/* } */
+
 .col-md-4 .card {
     position: sticky;
     top: 20px;
@@ -21,4 +19,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
   }
